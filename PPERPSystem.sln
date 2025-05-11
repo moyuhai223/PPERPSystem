@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPERPSystem", "PPERPSystem.csproj", "{4CE462BD-08FA-499E-9A84-DDB2D1B55DFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4CE462BD-08FA-499E-9A84-DDB2D1B55DFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CE462BD-08FA-499E-9A84-DDB2D1B55DFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CE462BD-08FA-499E-9A84-DDB2D1B55DFC}.Debug|x86.ActiveCfg = Debug|x86
+		{4CE462BD-08FA-499E-9A84-DDB2D1B55DFC}.Debug|x86.Build.0 = Debug|x86
+		{4CE462BD-08FA-499E-9A84-DDB2D1B55DFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CE462BD-08FA-499E-9A84-DDB2D1B55DFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CE462BD-08FA-499E-9A84-DDB2D1B55DFC}.Release|x86.ActiveCfg = Release|x86
+		{4CE462BD-08FA-499E-9A84-DDB2D1B55DFC}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9D9FD9E2-EC8E-4084-A488-E9E921A03383}
+	EndGlobalSection
+EndGlobal
