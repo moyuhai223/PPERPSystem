@@ -463,10 +463,32 @@ namespace PPERPSystem // 请确保这里的命名空间与您的项目一致
                         whereClause = "WHERE p.EmployeeID = @SearchTerm "; // 精确查询工号
                         cmd.Parameters.AddWithValue("@SearchTerm", searchTerm);
                     }
-                    else // ByItemName
+                    else if (searchType == PPESearchType.ByItemName)
                     {
                         whereClause = "WHERE p.ItemName LIKE @SearchTerm ";
                         cmd.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%");
+                    }
+                    else if (searchType == PPESearchType.ByIssueType)
+                    {
+                        whereClause = "WHERE p.IssueType = @SearchTerm ";
+                        cmd.Parameters.AddWithValue("@SearchTerm", searchTerm);
+                    }
+                    else if (searchType == PPESearchType.ByWorkProcess)
+                    {
+                        whereClause = "WHERE IFNULL(NULLIF(e.WorkProcess, ''), '未分配') LIKE @SearchTerm ";
+                        cmd.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%");
+                    }
+                    else // ByIssueDateRange
+                    {
+                        string[] rangeParts = searchTerm.Split(',');
+                        if (rangeParts.Length != 2)
+                        {
+                            return records;
+                        }
+
+                        whereClause = "WHERE p.IssueDate >= @StartDate AND p.IssueDate <= @EndDate ";
+                        cmd.Parameters.AddWithValue("@StartDate", rangeParts[0].Trim());
+                        cmd.Parameters.AddWithValue("@EndDate", rangeParts[1].Trim());
                     }
 
                     cmd.CommandText = queryBase + whereClause + "ORDER BY p.IssueDate DESC, p.IssueID DESC;";
@@ -504,7 +526,10 @@ namespace PPERPSystem // 请确保这里的命名空间与您的项目一致
     {
         ByEmployeeName,
         ByEmployeeID,
-        ByItemName
+        ByItemName,
+        ByIssueDateRange,
+        ByIssueType,
+        ByWorkProcess
     }
 
 }

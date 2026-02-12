@@ -504,6 +504,9 @@ namespace PPERPSystem // 确保这里的命名空间与您的项目名称一致
             cmbQuerySearchType.Items.Add(new KeyValuePair<string, PPESearchType>("按姓名查询", PPESearchType.ByEmployeeName));
             cmbQuerySearchType.Items.Add(new KeyValuePair<string, PPESearchType>("按工号查询", PPESearchType.ByEmployeeID));
             cmbQuerySearchType.Items.Add(new KeyValuePair<string, PPESearchType>("按用品名称查询", PPESearchType.ByItemName));
+            cmbQuerySearchType.Items.Add(new KeyValuePair<string, PPESearchType>("按发放日期范围查询", PPESearchType.ByIssueDateRange));
+            cmbQuerySearchType.Items.Add(new KeyValuePair<string, PPESearchType>("按发放类型查询", PPESearchType.ByIssueType));
+            cmbQuerySearchType.Items.Add(new KeyValuePair<string, PPESearchType>("按工序查询", PPESearchType.ByWorkProcess));
 
             if (cmbQuerySearchType.Items.Count > 0)
             {
@@ -535,6 +538,11 @@ namespace PPERPSystem // 确保这里的命名空间与您的项目名称一致
 
             PPESearchType searchType = ((KeyValuePair<string, PPESearchType>)cmbQuerySearchType.SelectedItem).Value;
 
+            if (!TryNormalizeQuerySearchTerm(searchType, ref searchTerm))
+            {
+                return;
+            }
+
             List<PPEIssuanceRecord> results = DatabaseHelper.SearchPPEIssuanceRecords(searchTerm, searchType);
 
             dgvQueryResults.DataSource = null; // 清除旧数据绑定
@@ -559,6 +567,47 @@ namespace PPERPSystem // 确保这里的命名空间与您的项目名称一致
             {
                 MessageBox.Show("未查询到相关记录。", "查询结果", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+
+        private bool TryNormalizeQuerySearchTerm(PPESearchType searchType, ref string searchTerm)
+        {
+            if (searchType != PPESearchType.ByIssueDateRange)
+            {
+                return true;
+            }
+
+            string[] separators = new[] { "~", "到", "至", ",", "，" };
+            string[] parts = null;
+            foreach (string separator in separators)
+            {
+                if (searchTerm.Contains(separator))
+                {
+                    parts = searchTerm.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+                    break;
+                }
+            }
+
+            if (parts == null || parts.Length != 2)
+            {
+                MessageBox.Show("日期范围格式应为：开始日期~结束日期，例如 2024-01-01~2024-12-31。", "格式错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (!DateTime.TryParse(parts[0].Trim(), out DateTime startDate) || !DateTime.TryParse(parts[1].Trim(), out DateTime endDate))
+            {
+                MessageBox.Show("日期范围中包含无效日期，请使用可识别日期格式。", "格式错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (startDate > endDate)
+            {
+                MessageBox.Show("开始日期不能大于结束日期。", "格式错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            searchTerm = $"{startDate:yyyy-MM-dd},{endDate:yyyy-MM-dd}";
+            return true;
         }
 
         #endregion
