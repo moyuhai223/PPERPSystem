@@ -13,9 +13,11 @@ namespace PPERPSystem // 确保这里的命名空间与您的项目名称一致
     public partial class Form1 : Form
     {
         // --- Class Member Variables for PPE Logic ---
-        private List<string> ppeTypesWithUniqueCode = new List<string> { "分体洁净服", "洁净帽" };
-        private List<string> shoeTypes = new List<string> { "室内安全鞋", "白色帆布鞋" };
-        private List<string> clothAndHatTypes = new List<string> { "分体洁净服", "洁净帽" };
+        private static readonly List<string> ppeTypesWithUniqueCode = new List<string> { "分体洁净服", "洁净帽" };
+        private static readonly List<string> shoeTypes = new List<string> { "室内安全鞋", "白色帆布鞋" };
+        private static readonly List<string> clothAndHatTypes = new List<string> { "分体洁净服", "洁净帽" };
+        private static readonly string[] ppeItemNames = { "室内安全鞋", "白色帆布鞋", "分体洁净服", "洁净帽" };
+        private static readonly string[] ppeIssueTypes = { "初次发放", "更换" };
 
         public Form1()
         {
@@ -295,7 +297,7 @@ namespace PPERPSystem // 确保这里的命名空间与您的项目名称一致
         {
             if (cmbPPEItemName == null) return;
             cmbPPEItemName.Items.Clear();
-            cmbPPEItemName.Items.AddRange(new string[] { "室内安全鞋", "白色帆布鞋", "分体洁净服", "洁净帽" });
+            cmbPPEItemName.Items.AddRange(ppeItemNames);
             if (cmbPPEItemName.Items.Count > 0) { cmbPPEItemName.SelectedIndex = 0; }
         }
 
@@ -303,7 +305,7 @@ namespace PPERPSystem // 确保这里的命名空间与您的项目名称一致
         {
             if (cmbPPEIssueType == null) return;
             cmbPPEIssueType.Items.Clear();
-            cmbPPEIssueType.Items.AddRange(new string[] { "初次发放", "更换" });
+            cmbPPEIssueType.Items.AddRange(ppeIssueTypes);
             if (cmbPPEIssueType.Items.Count > 0) { cmbPPEIssueType.SelectedIndex = 0; }
         }
 
@@ -501,6 +503,7 @@ namespace PPERPSystem // 确保这里的命名空间与您的项目名称一致
 
             cmbQuerySearchType.Items.Add(new KeyValuePair<string, PPESearchType>("按姓名查询", PPESearchType.ByEmployeeName));
             cmbQuerySearchType.Items.Add(new KeyValuePair<string, PPESearchType>("按工号查询", PPESearchType.ByEmployeeID));
+            cmbQuerySearchType.Items.Add(new KeyValuePair<string, PPESearchType>("按用品名称查询", PPESearchType.ByItemName));
 
             if (cmbQuerySearchType.Items.Count > 0)
             {
