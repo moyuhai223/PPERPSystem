@@ -1,7 +1,10 @@
-name: Build Desktop App (Win7 x86)
+name: Build Desktop App (Win x86 + x64)
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -9,6 +12,18 @@ on:
 jobs:
   build:
     runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - artifact_name: PPERPSystem-win-x86
+            package_name: PPERPSystem-win-x86.zip
+            platform: x86
+            output_path: bin/x86/Release
+          - artifact_name: PPERPSystem-win-x64
+            package_name: PPERPSystem-win-x64.zip
+            platform: "Any CPU"
+            output_path: bin/Release
 
     steps:
       - name: Checkout code
@@ -23,24 +38,28 @@ jobs:
           git config --global i18n.commitencoding utf-8
           git config --global i18n.logoutputencoding utf-8
 
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v2
 
       - name: Restore NuGet packages
         run: nuget restore PPERPSystem.sln
 
-      - name: Build solution (Release x86)
-        run: msbuild PPERPSystem.sln /t:Build /p:Configuration=Release /p:Platform=x86
+      - name: Build solution (Release)
+        run: msbuild PPERPSystem.sln /t:Build /p:Configuration=Release /p:Platform="${{ matrix.platform }}"
 
       - name: Package build output
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path publish | Out-Null
-          Copy-Item -Path "bin/x86/Release/*" -Destination publish -Recurse -Force
-          Compress-Archive -Path "publish/*" -DestinationPath "PPERPSystem-win7-x86.zip" -Force
+          $publishPath = "publish/${{ matrix.artifact_name }}"
+          New-Item -ItemType Directory -Force -Path $publishPath | Out-Null
+          Copy-Item -Path "${{ matrix.output_path }}/*" -Destination $publishPath -Recurse -Force
+          Compress-Archive -Path "$publishPath/*" -DestinationPath "${{ matrix.package_name }}" -Force
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PPERPSystem-win7-x86
-          path: PPERPSystem-win7-x86.zip
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.package_name }}
