@@ -78,8 +78,8 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="PPEWorkProcessDetail.cs.cs" />
-    <Compile Include="DatabaseHelper.cs.cs" />
+    <Compile Include="PPEWorkProcessDetail.cs" />
+    <Compile Include="DatabaseHelper.cs" />
     <Compile Include="Employee.cs" />
     <Compile Include="PPEIssuanceRecord.cs" />
     <Compile Include="Program.cs" />
