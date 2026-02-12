@@ -458,10 +458,15 @@ namespace PPERPSystem // 请确保这里的命名空间与您的项目一致
                         whereClause = "WHERE e.Name LIKE @SearchTerm ";
                         cmd.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%"); // 模糊查询
                     }
-                    else // ByEmployeeID
+                    else if (searchType == PPESearchType.ByEmployeeID)
                     {
                         whereClause = "WHERE p.EmployeeID = @SearchTerm "; // 精确查询工号
                         cmd.Parameters.AddWithValue("@SearchTerm", searchTerm);
+                    }
+                    else // ByItemName
+                    {
+                        whereClause = "WHERE p.ItemName LIKE @SearchTerm ";
+                        cmd.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%");
                     }
 
                     cmd.CommandText = queryBase + whereClause + "ORDER BY p.IssueDate DESC, p.IssueID DESC;";
@@ -498,7 +503,8 @@ namespace PPERPSystem // 请确保这里的命名空间与您的项目一致
     public enum PPESearchType
     {
         ByEmployeeName,
-        ByEmployeeID
+        ByEmployeeID,
+        ByItemName
     }
 
 }
